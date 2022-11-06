@@ -6,6 +6,14 @@ This guide will help you run web applications using a custom domain on your loca
 
 _Only MacOS is documented at the moment._
 
+### Clone this repo
+
+Start by cloning this repo:
+
+```
+git clone https://github.com/eldoy/local.git
+```
+
 ### MacOS
 
 MacOS has Apache built in by default.
