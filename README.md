@@ -1,8 +1,10 @@
-### Local
+# Local
 
 Localhost web development with Apache.
 
 This guide will help you run web applications using a custom domain on your local computer for development.
+
+_Only MacOS is documented at the moment._
 
 ### MacOS
 
@@ -15,7 +17,7 @@ MacOS has Apache built in by default.
 sudo apachectl start
 ```
 
-Go to `http://localhost` and verify that it works. You should see the text "It works!" in your browser.
+Go to [http://localhost](http://localhost) and verify that it works. You should see the text "It works!" in your browser.
 
 #### Add your domain
 
@@ -60,7 +62,7 @@ Include /Users/vidar/src/local/config/*.conf
 
 As an example, we are adding a web application called "Firmalisten" which is running on localhost port `5843`.
 
-Create a new file in `/Users/vidar/src/local/config` called `firmalisten.conf` and insert the following content:
+Create a new file in `/Users/vidar/src/local/config` called `firmalisten.conf`:
 
 ```
 <VirtualHost *:80>
