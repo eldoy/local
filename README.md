@@ -8,7 +8,7 @@ _Only MacOS is documented at the moment._
 
 ### Clone this repo
 
-Start by cloning this repo:
+Start by cloning this repo in your `~/src` directory:
 
 ```
 git clone https://github.com/eldoy/local.git
@@ -98,7 +98,7 @@ sudo apachectl restart
 
 Test your Apache config:
 ```
-apachectl configtest
+sudo apachectl configtest
 ```
 
 ### Commands
