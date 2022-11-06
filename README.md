@@ -14,6 +14,8 @@ Start by cloning this repo in your `~/src` directory:
 git clone https://github.com/eldoy/local.git
 ```
 
+As an example, we are adding a web application called "Firmalisten" which is running on localhost port `5843`.
+
 ### MacOS
 
 MacOS has Apache built in by default.
@@ -67,8 +69,6 @@ Include /Users/vidar/src/local/config/*.conf
 ```
 
 ### Add your application
-
-As an example, we are adding a web application called "Firmalisten" which is running on localhost port `5843`.
 
 Create a new file in `/Users/vidar/src/local/config` called `firmalisten.conf`:
 
