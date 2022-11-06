@@ -1,0 +1,20 @@
+{
+  "name": "local",
+  "version": "1.0.0",
+  "description": "Localhost web development with Apache",
+  "scripts": {
+    "start": "sudo apachectl start",
+    "restart": "sudo apachectl restart",
+    "test": "sudo apachectl configtest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eldoy/local.git"
+  },
+  "author": "Vidar Eldøy <vidar@eldoy.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eldoy/local/issues"
+  },
+  "homepage": "https://github.com/eldoy/local#readme"
+}
