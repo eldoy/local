@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "Localhost web development with Apache",
   "scripts": {
-    "start": "sudo apachectl start",
-    "restart": "sudo apachectl restart",
-    "test": "sudo apachectl configtest"
+    "start": "sudo launchctl load -w /Library/LaunchDaemons/homebrew.mxcl.nginx.plist",
+    "restart": "sudo launchctl kickstart -k system/homebrew.mxcl.nginx",
+    "stop": "sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist",
+    "test": "sudo nginx -t"
   },
   "repository": {
     "type": "git",

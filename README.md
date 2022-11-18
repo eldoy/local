@@ -1,6 +1,6 @@
 # Local
 
-Localhost web development with Apache.
+Localhost web development with NGINX.
 
 This guide will help you run web applications using a custom domain on your local computer for development.
 
@@ -16,15 +16,30 @@ git clone https://github.com/eldoy/local.git
 
 As an example, we are adding a web application called "Firmalisten" which is running on localhost port `5843`.
 
-### MacOS
+#### Stop Apache web server
 
-MacOS has Apache built in by default.
-
-#### Start Apache
+MacOS has Apache web server pre-installed. Make sure it's not running by running these commands:
 
 ```
-# Start apache
-sudo apachectl start
+sudo apachectl stop
+sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
+```
+
+#### Install NGINX
+
+```
+# Install with homebrew
+brew install nginx
+
+# Start NGINX server, also on boot
+sudo cp /usr/local/opt/nginx/homebrew.mxcl.nginx.plist /Library/LaunchDaemons
+sudo launchctl load -w /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
+
+# Restart NGINX server
+sudo launchctl kickstart -k system/homebrew.mxcl.nginx
+
+# Stop NGINX server
+sudo launchctl unload /Library/LaunchDaemons/homebrew.mxcl.nginx.plist
 ```
 
 Go to [http://localhost](http://localhost) and verify that it works. You should see the text "It works!" in your browser.
@@ -46,73 +61,78 @@ sudo dscacheutil -flushcache
 sudo killall -HUP mDNSResponder
 ```
 
-#### Configure Apache
+#### Configure NGINX
 
-Open the Apache config file:
+Open the NGINX config file:
 ```
-sudo vim /etc/apache2/httpd.conf
-```
-
-Make sure the following modules are enabled (uncommented):
-
-```
-LoadModule proxy_module libexec/apache2/mod_proxy.so
-LoadModule proxy_http_module libexec/apache2/mod_proxy_http.so
-LoadModule proxy_wstunnel_module libexec/apache2/mod_proxy_wstunnel.so
-LoadModule rewrite_module libexec/apache2/mod_rewrite.so
+sudo vim /usr/local/etc/nginx/nginx.conf
 ```
 
 At the end of the file, add this line to load your custom Virtual Host configurations:
 ```
 # Change the path to your installation
-Include /Users/vidar/src/local/config/*.conf
+include /Users/vidar/src/local/sites/*.conf;
 ```
 
 ### Add your application
 
-Create a new file in `/Users/vidar/src/local/config` called `firmalisten.conf`:
+Create a new file in `/Users/vidar/src/local/sites` called `firmalisten.conf`:
 
 ```
-<VirtualHost *:80>
-    ServerName firmalisten.test
-    ProxyRequests on
-    RequestHeader set X-Forwarded-Proto "http"
-    ProxyPass / http://localhost:5843/
-    ProxyPassReverse / http://localhost:5843/
+upstream app {
+  server 127.0.0.1:5843 max_fails=0;
+  keepalive 2;
+}
 
-    RewriteEngine on
-    RewriteCond %{HTTP:UPGRADE} ^WebSocket$ [NC]
-    RewriteCond %{HTTP:CONNECTION} ^Upgrade$ [NC]
-    RewriteRule .* ws://localhost:5843%{REQUEST_URI} [P]
-</VirtualHost>
+server {
+  listen 80;
+  server_name firmalisten.test;
+
+  location / {
+    proxy_pass http://app/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_buffering off;
+    proxy_request_buffering off;
+    proxy_redirect off;
+    proxy_cache off;
+  }
+}
 ```
 
 This adds a reverse proxy from firmalisten.test to the web application with support for web sockets.
 
 ### Reload configuration
 
-Restart Apache:
+From the root directory of this repository, restart NGINX:
 ```
-sudo apachectl restart
+npm run restart
 ```
 
-Test your Apache config:
+Test your NGINX config in case of problems:
 ```
-sudo apachectl configtest
+npm run test
 ```
 
 ### Commands
 
-This package includes the following convenience scripts:
+This package includes the following convenience scripts defined in `package.json`:
 
 ```
-# Start Apache
+# Start NGINX
 npm run start
 
-# Restart Apache
+# Restart NGINX
 npm run restart
 
-# Test Apache config
+# Stop NGINX
+npm run stop
+
+# Test NGINX config
 npm run test
 ```
 
